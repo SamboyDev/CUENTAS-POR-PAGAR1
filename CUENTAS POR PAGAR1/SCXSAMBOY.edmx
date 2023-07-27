@@ -1,0 +1,286 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="SCXSAMBOYModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="CHEQUESSAMBOY">
+          <Key>
+            <PropertyRef Name="NUMEROCHEQUE" />
+          </Key>
+          <Property Name="NUMEROCHEQUE" Type="int" Nullable="false" />
+          <Property Name="NUMEROFACTURA" Type="int" />
+          <Property Name="VALORCHEQUE" Type="money" />
+          <Property Name="FECHACHEQUE" Type="date" />
+        </EntityType>
+        <EntityType Name="FACTURASSAMBOY">
+          <Key>
+            <PropertyRef Name="NUMEROFACTURA" />
+          </Key>
+          <Property Name="NUMEROFACTURA" Type="int" Nullable="false" />
+          <Property Name="CODIGO" Type="varchar" MaxLength="7" />
+          <Property Name="VALORFACTURA" Type="money" />
+          <Property Name="FECHAFACTURA" Type="date" />
+          <Property Name="FECHAVENCIMIENTO" Type="date" />
+        </EntityType>
+        <EntityType Name="PROVEEDORESSAMBOY">
+          <Key>
+            <PropertyRef Name="CODIGO" />
+          </Key>
+          <Property Name="CODIGO" Type="varchar" MaxLength="7" Nullable="false" />
+          <Property Name="NOMBRES" Type="varchar" MaxLength="30" />
+          <Property Name="APELLIDOS" Type="varchar" MaxLength="30" />
+          <Property Name="DIRECCION" Type="varchar" MaxLength="45" />
+          <Property Name="CIUDAD" Type="varchar" MaxLength="30" />
+          <Property Name="TELEFONO" Type="varchar" MaxLength="12" />
+        </EntityType>
+        <EntityType Name="USUARIOSSAMBOY">
+          <Key>
+            <PropertyRef Name="USUARIO" />
+          </Key>
+          <Property Name="USUARIO" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="CLAVE" Type="varchar" MaxLength="20" />
+        </EntityType>
+        <!--Errores durante la generación:
+advertencia 6002: La tabla o vista 'SCXSAMBOY.dbo.ESTADODECUENTAS' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
+        <EntityType Name="ESTADODECUENTAS">
+          <Key>
+            <PropertyRef Name="CODIGO" />
+            <PropertyRef Name="NUMEROFACTURA" />
+          </Key>
+          <Property Name="CODIGO" Type="varchar" MaxLength="7" Nullable="false" />
+          <Property Name="NOMBRES" Type="varchar" MaxLength="30" />
+          <Property Name="APELLIDOS" Type="varchar" MaxLength="30" />
+          <Property Name="NUMEROFACTURA" Type="int" Nullable="false" />
+          <Property Name="MONTO" Type="money" />
+          <Property Name="PAGOS" Type="money" />
+          <Property Name="BALANCE" Type="money" />
+        </EntityType>
+        <Association Name="CHEQ_FACT">
+          <End Role="FACTURASSAMBOY" Type="Self.FACTURASSAMBOY" Multiplicity="0..1" />
+          <End Role="CHEQUESSAMBOY" Type="Self.CHEQUESSAMBOY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FACTURASSAMBOY">
+              <PropertyRef Name="NUMEROFACTURA" />
+            </Principal>
+            <Dependent Role="CHEQUESSAMBOY">
+              <PropertyRef Name="NUMEROFACTURA" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FACT_PROV">
+          <End Role="PROVEEDORESSAMBOY" Type="Self.PROVEEDORESSAMBOY" Multiplicity="0..1" />
+          <End Role="FACTURASSAMBOY" Type="Self.FACTURASSAMBOY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PROVEEDORESSAMBOY">
+              <PropertyRef Name="CODIGO" />
+            </Principal>
+            <Dependent Role="FACTURASSAMBOY">
+              <PropertyRef Name="CODIGO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SCXSAMBOYModelStoreContainer">
+          <EntitySet Name="CHEQUESSAMBOY" EntityType="Self.CHEQUESSAMBOY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FACTURASSAMBOY" EntityType="Self.FACTURASSAMBOY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PROVEEDORESSAMBOY" EntityType="Self.PROVEEDORESSAMBOY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="USUARIOSSAMBOY" EntityType="Self.USUARIOSSAMBOY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ESTADODECUENTAS" EntityType="Self.ESTADODECUENTAS" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ESTADODECUENTAS].[CODIGO] AS [CODIGO], 
+    [ESTADODECUENTAS].[NOMBRES] AS [NOMBRES], 
+    [ESTADODECUENTAS].[APELLIDOS] AS [APELLIDOS], 
+    [ESTADODECUENTAS].[NUMEROFACTURA] AS [NUMEROFACTURA], 
+    [ESTADODECUENTAS].[MONTO] AS [MONTO], 
+    [ESTADODECUENTAS].[PAGOS] AS [PAGOS], 
+    [ESTADODECUENTAS].[BALANCE] AS [BALANCE]
+    FROM [dbo].[ESTADODECUENTAS] AS [ESTADODECUENTAS]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="CHEQ_FACT" Association="Self.CHEQ_FACT">
+            <End Role="FACTURASSAMBOY" EntitySet="FACTURASSAMBOY" />
+            <End Role="CHEQUESSAMBOY" EntitySet="CHEQUESSAMBOY" />
+          </AssociationSet>
+          <AssociationSet Name="FACT_PROV" Association="Self.FACT_PROV">
+            <End Role="PROVEEDORESSAMBOY" EntitySet="PROVEEDORESSAMBOY" />
+            <End Role="FACTURASSAMBOY" EntitySet="FACTURASSAMBOY" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SCXSAMBOYModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="CHEQUESSAMBOY">
+          <Key>
+            <PropertyRef Name="NUMEROCHEQUE" />
+          </Key>
+          <Property Name="NUMEROCHEQUE" Type="Int32" Nullable="false" />
+          <Property Name="NUMEROFACTURA" Type="Int32" />
+          <Property Name="VALORCHEQUE" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="FECHACHEQUE" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="FACTURASSAMBOY">
+          <Key>
+            <PropertyRef Name="NUMEROFACTURA" />
+          </Key>
+          <Property Name="NUMEROFACTURA" Type="Int32" Nullable="false" />
+          <Property Name="CODIGO" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+          <Property Name="VALORFACTURA" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="FECHAFACTURA" Type="DateTime" Precision="0" />
+          <Property Name="FECHAVENCIMIENTO" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="PROVEEDORESSAMBOY">
+          <Key>
+            <PropertyRef Name="CODIGO" />
+          </Key>
+          <Property Name="CODIGO" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="NOMBRES" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="APELLIDOS" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="DIRECCION" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="CIUDAD" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="TELEFONO" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="USUARIOSSAMBOY">
+          <Key>
+            <PropertyRef Name="USUARIO" />
+          </Key>
+          <Property Name="USUARIO" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CLAVE" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="ESTADODECUENTAS">
+          <Key>
+            <PropertyRef Name="CODIGO" />
+            <PropertyRef Name="NUMEROFACTURA" />
+          </Key>
+          <Property Name="CODIGO" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="NOMBRES" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="APELLIDOS" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="NUMEROFACTURA" Type="Int32" Nullable="false" />
+          <Property Name="MONTO" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="PAGOS" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="BALANCE" Type="Decimal" Precision="19" Scale="4" />
+        </EntityType>
+        <Association Name="CHEQ_FACT">
+          <End Role="FACTURASSAMBOY" Type="Self.FACTURASSAMBOY" Multiplicity="0..1" />
+          <End Role="CHEQUESSAMBOY" Type="Self.CHEQUESSAMBOY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FACTURASSAMBOY">
+              <PropertyRef Name="NUMEROFACTURA" />
+            </Principal>
+            <Dependent Role="CHEQUESSAMBOY">
+              <PropertyRef Name="NUMEROFACTURA" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FACT_PROV">
+          <End Role="PROVEEDORESSAMBOY" Type="Self.PROVEEDORESSAMBOY" Multiplicity="0..1" />
+          <End Role="FACTURASSAMBOY" Type="Self.FACTURASSAMBOY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PROVEEDORESSAMBOY">
+              <PropertyRef Name="CODIGO" />
+            </Principal>
+            <Dependent Role="FACTURASSAMBOY">
+              <PropertyRef Name="CODIGO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SCXSAMBOYEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="CHEQUESSAMBOY" EntityType="Self.CHEQUESSAMBOY" />
+          <EntitySet Name="FACTURASSAMBOY" EntityType="Self.FACTURASSAMBOY" />
+          <EntitySet Name="PROVEEDORESSAMBOY" EntityType="Self.PROVEEDORESSAMBOY" />
+          <EntitySet Name="USUARIOSSAMBOY" EntityType="Self.USUARIOSSAMBOY" />
+          <EntitySet Name="ESTADODECUENTAS" EntityType="Self.ESTADODECUENTAS" />
+          <AssociationSet Name="CHEQ_FACT" Association="Self.CHEQ_FACT">
+            <End Role="FACTURASSAMBOY" EntitySet="FACTURASSAMBOY" />
+            <End Role="CHEQUESSAMBOY" EntitySet="CHEQUESSAMBOY" />
+          </AssociationSet>
+          <AssociationSet Name="FACT_PROV" Association="Self.FACT_PROV">
+            <End Role="PROVEEDORESSAMBOY" EntitySet="PROVEEDORESSAMBOY" />
+            <End Role="FACTURASSAMBOY" EntitySet="FACTURASSAMBOY" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SCXSAMBOYModelStoreContainer" CdmEntityContainer="SCXSAMBOYEntities">
+          <EntitySetMapping Name="CHEQUESSAMBOY">
+            <EntityTypeMapping TypeName="SCXSAMBOYModel.CHEQUESSAMBOY">
+              <MappingFragment StoreEntitySet="CHEQUESSAMBOY">
+                <ScalarProperty Name="NUMEROCHEQUE" ColumnName="NUMEROCHEQUE" />
+                <ScalarProperty Name="NUMEROFACTURA" ColumnName="NUMEROFACTURA" />
+                <ScalarProperty Name="VALORCHEQUE" ColumnName="VALORCHEQUE" />
+                <ScalarProperty Name="FECHACHEQUE" ColumnName="FECHACHEQUE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FACTURASSAMBOY">
+            <EntityTypeMapping TypeName="SCXSAMBOYModel.FACTURASSAMBOY">
+              <MappingFragment StoreEntitySet="FACTURASSAMBOY">
+                <ScalarProperty Name="NUMEROFACTURA" ColumnName="NUMEROFACTURA" />
+                <ScalarProperty Name="CODIGO" ColumnName="CODIGO" />
+                <ScalarProperty Name="VALORFACTURA" ColumnName="VALORFACTURA" />
+                <ScalarProperty Name="FECHAFACTURA" ColumnName="FECHAFACTURA" />
+                <ScalarProperty Name="FECHAVENCIMIENTO" ColumnName="FECHAVENCIMIENTO" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PROVEEDORESSAMBOY">
+            <EntityTypeMapping TypeName="SCXSAMBOYModel.PROVEEDORESSAMBOY">
+              <MappingFragment StoreEntitySet="PROVEEDORESSAMBOY">
+                <ScalarProperty Name="CODIGO" ColumnName="CODIGO" />
+                <ScalarProperty Name="NOMBRES" ColumnName="NOMBRES" />
+                <ScalarProperty Name="APELLIDOS" ColumnName="APELLIDOS" />
+                <ScalarProperty Name="DIRECCION" ColumnName="DIRECCION" />
+                <ScalarProperty Name="CIUDAD" ColumnName="CIUDAD" />
+                <ScalarProperty Name="TELEFONO" ColumnName="TELEFONO" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="USUARIOSSAMBOY">
+            <EntityTypeMapping TypeName="SCXSAMBOYModel.USUARIOSSAMBOY">
+              <MappingFragment StoreEntitySet="USUARIOSSAMBOY">
+                <ScalarProperty Name="USUARIO" ColumnName="USUARIO" />
+                <ScalarProperty Name="CLAVE" ColumnName="CLAVE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ESTADODECUENTAS">
+            <EntityTypeMapping TypeName="SCXSAMBOYModel.ESTADODECUENTAS">
+              <MappingFragment StoreEntitySet="ESTADODECUENTAS">
+                <ScalarProperty Name="CODIGO" ColumnName="CODIGO" />
+                <ScalarProperty Name="NOMBRES" ColumnName="NOMBRES" />
+                <ScalarProperty Name="APELLIDOS" ColumnName="APELLIDOS" />
+                <ScalarProperty Name="NUMEROFACTURA" ColumnName="NUMEROFACTURA" />
+                <ScalarProperty Name="MONTO" ColumnName="MONTO" />
+                <ScalarProperty Name="PAGOS" ColumnName="PAGOS" />
+                <ScalarProperty Name="BALANCE" ColumnName="BALANCE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
